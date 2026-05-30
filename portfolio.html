@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0c0f;
+    --surface: #111318;
+    --surface2: #181c22;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #e8eaf0;
+    --muted: #5a6070;
+    --accent: #00e5a0;
+    --accent-dim: rgba(0,229,160,0.12);
+    --red: #ff5757;
+    --red-dim: rgba(255,87,87,0.12);
+    --mono: 'Space Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+
+  header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .logo {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  h1 {
+    font-family: var(--mono);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+
+  h1 span { color: var(--accent); }
+
+  #status {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: var(--mono);
+    letter-spacing: 0.05em;
+  }
+
+  .btn {
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+  }
+
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .btn-accent {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+    font-weight: 700;
+  }
+
+  .btn-accent:hover { background: #00ffb3; border-color: #00ffb3; color: #000; }
+
+  .btn-sm {
+    padding: 4px 10px;
+    font-size: 10px;
+  }
+
+  .btn-danger { border-color: var(--red-dim); color: var(--muted); }
+  .btn-danger:hover { border-color: var(--red); color: var(--red); }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 2rem;
+  }
+
+  .summary-card {
+    background: var(--surface);
+    padding: 1.25rem 1.5rem;
+  }
+
+  .summary-label {
+    font-size: 10px;
+    color: var(--muted);
+    font-family: var(--mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .summary-value {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .summary-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+    font-family: var(--mono);
+  }
+
+  .up { color: var(--accent); }
+  .down { color: var(--red); }
+
+  .table-wrap {
+    border: 1px solid var(--border);
+    overflow-x: auto;
+    margin-bottom: 2rem;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  thead tr {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border2);
+  }
+
+  th {
+    padding: 12px 16px;
+    text-align: right;
+    color: var(--muted);
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    font-size: 10px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  th:first-child { text-align: left; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--surface2); }
+
+  td {
+    padding: 14px 16px;
+    text-align: right;
+    color: var(--text);
+  }
+
+  td:first-child { text-align: left; }
+
+  .token-name { font-weight: 700; font-size: 13px; }
+  .token-addr {
+    font-size: 9px;
+    color: var(--muted);
+    margin-top: 2px;
+    letter-spacing: 0.03em;
+  }
+
+  .dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  .actions { display: flex; gap: 6px; justify-content: flex-end; }
+
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    padding: 2rem;
+    width: 100%;
+    max-width: 440px;
+    position: relative;
+  }
+
+  .modal h2 {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    color: var(--accent);
+  }
+
+  .field { margin-bottom: 1.25rem; }
+
+  .field label {
+    display: block;
+    font-size: 10px;
+    color: var(--muted);
+    font-family: var(--mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .field input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .field input:focus { border-color: var(--accent); }
+  .field input::placeholder { color: var(--muted); }
+
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 1.5rem; }
+
+  .close-btn {
+    position: absolute;
+    top: 1rem; right: 1rem;
+    background: none; border: none;
+    color: var(--muted); cursor: pointer;
+    font-size: 20px; line-height: 1;
+    padding: 4px;
+  }
+
+  .close-btn:hover { color: var(--text); }
+
+  .empty {
+    padding: 3rem;
+    text-align: center;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+  }
+
+  .header-actions { display: flex; gap: 10px; align-items: center; }
+
+  .refresh-icon { display: inline-block; transition: transform 0.6s; }
+  .refreshing .refresh-icon { animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .bar-wrap {
+    display: flex;
+    gap: 0;
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    background: var(--surface2);
+  }
+
+  .bar-seg { height: 100%; transition: width 0.5s ease; }
+
+  .error-msg {
+    font-size: 11px;
+    color: var(--red);
+    margin-top: 4px;
+    font-family: var(--mono);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">// on-chain portfolio</div>
+    <h1>TRACK<span>_</span>R</h1>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+    <div class="header-actions">
+      <button class="btn" id="refreshBtn" onclick="refreshAll()"><span class="refresh-icon">↻</span> Refresh</button>
+      <button class="btn btn-accent" onclick="openModal()">+ Add Token</button>
+    </div>
+    <div id="status">—</div>
+  </div>
+</header>
+
+<div class="summary-grid" id="summaryGrid">
+  <div class="summary-card">
+    <div class="summary-label">Total Value</div>
+    <div class="summary-value" id="totalValue">—</div>
+  </div>
+  <div class="summary-card">
+    <div class="summary-label">24h Change</div>
+    <div class="summary-value" id="totalChange">—</div>
+    <div class="summary-sub" id="totalChangePct">—</div>
+  </div>
+  <div class="summary-card">
+    <div class="summary-label">Tokens</div>
+    <div class="summary-value" id="tokenCount">—</div>
+  </div>
+  <div class="summary-card">
+    <div class="summary-label">24h Volume</div>
+    <div class="summary-value" id="totalVolume">—</div>
+  </div>
+</div>
+
+<div class="bar-wrap" id="allocationBar"></div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Token</th>
+        <th>Holdings</th>
+        <th>Price</th>
+        <th>Value</th>
+        <th>24h Chg</th>
+        <th>24h Vol</th>
+        <th>Alloc</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      <tr><td colspan="8" class="empty">No tokens yet. Click + Add Token to get started.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="close-btn" onclick="closeModal()">×</button>
+    <h2 id="modalTitle">Add Token</h2>
+    <div class="field">
+      <label>Token Symbol</label>
+      <input type="text" id="inputSymbol" placeholder="e.g. KEETA" />
+    </div>
+    <div class="field">
+      <label>Contract Address (Base chain)</label>
+      <input type="text" id="inputAddress" placeholder="0x..." />
+      <div class="error-msg" id="addrError"></div>
+    </div>
+    <div class="field">
+      <label>Amount You Hold</label>
+      <input type="number" id="inputAmount" placeholder="e.g. 10000" min="0" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-accent" onclick="saveToken()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const COLORS = ['#00e5a0','#5b8af7','#ff9f40','#ff6b9d','#a78bfa','#34d399','#fb923c','#60a5fa'];
+let tokens = [];
+let editIndex = -1;
+
+function load() {
+  try {
+    const saved = localStorage.getItem('tracker_tokens');
+    if (saved) tokens = JSON.parse(saved);
+  } catch(e) { tokens = []; }
+  if (tokens.length === 0) {
+    tokens = [
+      { symbol: 'KEETA', address: '0xc0634090F2Fe6c6d75e61Be2b949464aBB498973', amount: 10000, color: COLORS[0] },
+      { symbol: 'REI',   address: '0x6B2504A03ca4D43d0D73776F6aD46dAb2F2a4cFD', amount: 50000, color: COLORS[1] }
+    ];
+    save();
+  }
+}
+
+function save() {
+  localStorage.setItem('tracker_tokens', JSON.stringify(tokens));
+}
+
+async function fetchPrice(address) {
+  try {
+    const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${address}`);
+    const data = await res.json();
+    if (data.pairs && data.pairs.length > 0) {
+      const pair = data.pairs.sort((a,b) => (b.liquidity?.usd||0) - (a.liquidity?.usd||0))[0];
+      return {
+        price: parseFloat(pair.priceUsd) || 0,
+        change24h: parseFloat(pair.priceChange?.h24) || 0,
+        volume24h: parseFloat(pair.volume?.h24) || 0,
+        name: pair.baseToken?.name || ''
+      };
+    }
+  } catch(e) {}
+  return { price: 0, change24h: 0, volume24h: 0, name: '' };
+}
+
+function fmtUsd(n) {
+  if (n >= 1e9) return '$' + (n/1e9).toFixed(2) + 'B';
+  if (n >= 1e6) return '$' + (n/1e6).toFixed(2) + 'M';
+  if (n >= 1e3) return '$' + (n/1e3).toFixed(1) + 'K';
+  return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+function fmtPrice(n) {
+  if (n === 0) return '—';
+  if (n < 0.000001) return '$' + n.toExponential(3);
+  if (n < 0.0001) return '$' + n.toFixed(8);
+  if (n < 0.01) return '$' + n.toFixed(6);
+  if (n < 1) return '$' + n.toFixed(4);
+  return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+function fmtNum(n) {
+  return n.toLocaleString('en-US');
+}
+
+async function refreshAll() {
+  const btn = document.getElementById('refreshBtn');
+  btn.classList.add('refreshing');
+  document.getElementById('status').textContent = 'Fetching prices...';
+
+  const results = await Promise.all(tokens.map(t => fetchPrice(t.address)));
+  tokens.forEach((t, i) => { t._data = results[i]; });
+
+  render();
+  btn.classList.remove('refreshing');
+  document.getElementById('status').textContent = 'Updated ' + new Date().toLocaleTimeString();
+}
+
+function render() {
+  const tbody = document.getElementById('tableBody');
+  if (tokens.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" class="empty">No tokens yet. Click + Add Token to get started.</td></tr>';
+    document.getElementById('totalValue').textContent = '$0.00';
+    document.getElementById('totalChange').textContent = '—';
+    document.getElementById('totalChangePct').textContent = '—';
+    document.getElementById('tokenCount').textContent = '0';
+    document.getElementById('totalVolume').textContent = '—';
+    document.getElementById('allocationBar').innerHTML = '';
+    return;
+  }
+
+  let totalValue = 0, totalVolume = 0, totalChange = 0;
+  tokens.forEach(t => {
+    const d = t._data || { price:0, change24h:0, volume24h:0 };
+    t._value = t.amount * d.price;
+    totalValue += t._value;
+    totalVolume += d.volume24h;
+  });
+
+  tokens.forEach(t => {
+    const d = t._data || { price:0, change24h:0, volume24h:0 };
+    totalChange += d.change24h * (t._value / (totalValue || 1));
+  });
+
+  document.getElementById('totalValue').textContent = fmtUsd(totalValue);
+
+  const changeEl = document.getElementById('totalChange');
+  const changePct = document.getElementById('totalChangePct');
+  changeEl.textContent = (totalChange >= 0 ? '+' : '') + totalChange.toFixed(2) + '%';
+  changeEl.className = 'summary-value ' + (totalChange >= 0 ? 'up' : 'down');
+  changePct.textContent = 'weighted avg';
+
+  document.getElementById('tokenCount').textContent = tokens.length;
+  document.getElementById('totalVolume').textContent = fmtUsd(totalVolume);
+
+  const bar = document.getElementById('allocationBar');
+  bar.innerHTML = tokens.map(t => {
+    const pct = totalValue > 0 ? (t._value / totalValue * 100) : (100 / tokens.length);
+    return `<div class="bar-seg" style="width:${pct.toFixed(2)}%;background:${t.color};"></div>`;
+  }).join('');
+
+  tbody.innerHTML = tokens.map((t, i) => {
+    const d = t._data || { price:0, change24h:0, volume24h:0 };
+    const alloc = totalValue > 0 ? (t._value / totalValue * 100).toFixed(1) : '0.0';
+    const chgClass = d.change24h >= 0 ? 'up' : 'down';
+    const chgSign = d.change24h >= 0 ? '+' : '';
+    const shortAddr = t.address.slice(0,6) + '...' + t.address.slice(-4);
+    return `<tr>
+      <td>
+        <span class="dot" style="background:${t.color}"></span>
+        <span class="token-name">${t.symbol}</span>
+        <div class="token-addr">${shortAddr}</div>
+      </td>
+      <td>${fmtNum(t.amount)}</td>
+      <td>${fmtPrice(d.price)}</td>
+      <td>${d.price > 0 ? fmtUsd(t._value) : '—'}</td>
+      <td class="${chgClass}">${d.change24h !== 0 ? chgSign + d.change24h.toFixed(2) + '%' : '—'}</td>
+      <td>${d.volume24h > 0 ? fmtUsd(d.volume24h) : '—'}</td>
+      <td>${alloc}%</td>
+      <td>
+        <div class="actions">
+          <button class="btn btn-sm" onclick="openModal(${i})">Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteToken(${i})">✕</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function openModal(index = -1) {
+  editIndex = index;
+  const overlay = document.getElementById('modalOverlay');
+  document.getElementById('addrError').textContent = '';
+  if (index >= 0) {
+    const t = tokens[index];
+    document.getElementById('modalTitle').textContent = 'Edit Token';
+    document.getElementById('inputSymbol').value = t.symbol;
+    document.getElementById('inputAddress').value = t.address;
+    document.getElementById('inputAmount').value = t.amount;
+  } else {
+    document.getElementById('modalTitle').textContent = 'Add Token';
+    document.getElementById('inputSymbol').value = '';
+    document.getElementById('inputAddress').value = '';
+    document.getElementById('inputAmount').value = '';
+  }
+  overlay.classList.add('open');
+  document.getElementById('inputSymbol').focus();
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+async function saveToken() {
+  const symbol = document.getElementById('inputSymbol').value.trim().toUpperCase();
+  const address = document.getElementById('inputAddress').value.trim();
+  const amount = parseFloat(document.getElementById('inputAmount').value);
+  const errEl = document.getElementById('addrError');
+
+  if (!symbol) { errEl.textContent = 'Symbol required'; return; }
+  if (!/^0x[0-9a-fA-F]{40}$/.test(address)) { errEl.textContent = 'Invalid address format'; return; }
+  if (isNaN(amount) || amount < 0) { errEl.textContent = 'Enter a valid amount'; return; }
+  errEl.textContent = '';
+
+  if (editIndex >= 0) {
+    tokens[editIndex].symbol = symbol;
+    tokens[editIndex].address = address;
+    tokens[editIndex].amount = amount;
+    tokens[editIndex]._data = null;
+  } else {
+    const usedColors = tokens.map(t => t.color);
+    const color = COLORS.find(c => !usedColors.includes(c)) || COLORS[tokens.length % COLORS.length];
+    tokens.push({ symbol, address, amount, color, _data: null });
+  }
+
+  save();
+  closeModal();
+  await refreshAll();
+}
+
+function deleteToken(index) {
+  if (!confirm(`Remove ${tokens[index].symbol} from your portfolio?`)) return;
+  tokens.splice(index, 1);
+  save();
+  render();
+  if (tokens.length > 0) refreshAll();
+}
+
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+load();
+render();
+refreshAll();
+</script>
+</body>
+</html>
