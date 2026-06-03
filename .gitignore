@@ -1,0 +1,14 @@
+# API keys and environment variables
+.env
+.env.local
+.env*.local
+
+# Mac system files
+.DS_Store
+
+# Node modules (for when we add a backend later)
+node_modules/
+npm-debug.log*
+
+# VS Code settings
+.vscode/
