@@ -17,299 +17,111 @@
     --text: #e8eaf0;
     --muted: #5a6070;
     --accent: #00e5a0;
-    --accent-dim: rgba(0,229,160,0.12);
+    --accent-dim: rgba(0,229,160,0.10);
     --red: #ff5757;
     --red-dim: rgba(255,87,87,0.12);
     --mono: 'Space Mono', monospace;
     --sans: 'DM Sans', sans-serif;
   }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 14px;
-    min-height: 100vh;
-    padding: 2rem;
-  }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 17px; min-height: 100vh; padding: 2rem; }
 
-  header {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    margin-bottom: 2.5rem;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .logo {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 4px;
-  }
-
-  h1 {
-    font-family: var(--mono);
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--text);
-    letter-spacing: -0.02em;
-  }
-
+  header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem; }
+  .logo { font-family: var(--mono); font-size: 13px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px; }
+  h1 { font-family: var(--mono); font-size: 36px; font-weight: 700; letter-spacing: -0.02em; }
   h1 span { color: var(--accent); }
+  #status { font-size: 13px; color: var(--muted); font-family: var(--mono); letter-spacing: 0.05em; }
 
-  #status {
-    font-size: 11px;
-    color: var(--muted);
-    font-family: var(--mono);
-    letter-spacing: 0.05em;
-  }
-
-  .btn {
-    background: transparent;
-    border: 1px solid var(--border2);
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    padding: 8px 16px;
-    cursor: pointer;
-    transition: all 0.15s;
-    text-transform: uppercase;
-  }
-
+  .btn { background: transparent; border: 1px solid var(--border2); color: var(--text); font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; padding: 10px 20px; cursor: pointer; transition: all 0.15s; text-transform: uppercase; }
   .btn:hover { border-color: var(--accent); color: var(--accent); }
-
-  .btn-accent {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #000;
-    font-weight: 700;
-  }
-
+  .btn-accent { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 700; }
   .btn-accent:hover { background: #00ffb3; border-color: #00ffb3; color: #000; }
-
-  .btn-sm {
-    padding: 4px 10px;
-    font-size: 10px;
-  }
-
+  .btn-sm { padding: 6px 13px; font-size: 12px; }
   .btn-danger { border-color: var(--red-dim); color: var(--muted); }
   .btn-danger:hover { border-color: var(--red); color: var(--red); }
 
-  .summary-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    margin-bottom: 2rem;
-  }
-
-  .summary-card {
-    background: var(--surface);
-    padding: 1.25rem 1.5rem;
-  }
-
-  .summary-label {
-    font-size: 10px;
-    color: var(--muted);
-    font-family: var(--mono);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  .summary-value {
-    font-family: var(--mono);
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--text);
-  }
-
-  .summary-sub {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 4px;
-    font-family: var(--mono);
-  }
-
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 2rem; }
+  .summary-card { background: var(--surface); padding: 1.25rem 1.5rem; }
+  .summary-label { font-size: 12px; color: var(--muted); font-family: var(--mono); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; }
+  .summary-value { font-family: var(--mono); font-size: 30px; font-weight: 700; }
+  .summary-sub { font-size: 13px; color: var(--muted); margin-top: 4px; font-family: var(--mono); }
   .up { color: var(--accent); }
   .down { color: var(--red); }
 
-  .table-wrap {
-    border: 1px solid var(--border);
-    overflow-x: auto;
-    margin-bottom: 2rem;
-  }
+  .bar-wrap { display: flex; height: 6px; border-radius: 3px; overflow: hidden; margin-bottom: 1rem; background: var(--surface2); }
+  .bar-seg { height: 100%; transition: width 0.5s ease; }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: var(--mono);
-    font-size: 12px;
-  }
+  .bulk-bar { display: none; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--accent); border-left: 3px solid var(--accent); padding: 10px 16px; margin-bottom: 1rem; font-family: var(--mono); font-size: 14px; flex-wrap: wrap; }
+  .bulk-count { color: var(--accent); flex: 1; min-width: 120px; }
 
-  thead tr {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border2);
-  }
+  .show-hidden-wrap { text-align: right; margin-bottom: 0.5rem; min-height: 28px; }
 
-  th {
-    padding: 12px 16px;
-    text-align: right;
-    color: var(--muted);
-    font-weight: 400;
-    letter-spacing: 0.1em;
-    font-size: 10px;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  th:first-child { text-align: left; }
-
-  tbody tr {
-    border-bottom: 1px solid var(--border);
-    transition: background 0.1s;
-  }
-
+  .table-wrap { border: 1px solid var(--border); overflow-x: auto; margin-bottom: 2rem; }
+  table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 14px; }
+  thead tr { background: var(--surface); border-bottom: 1px solid var(--border2); }
+  th { padding: 14px 16px; text-align: right; color: var(--muted); font-weight: 400; letter-spacing: 0.1em; font-size: 12px; text-transform: uppercase; white-space: nowrap; }
+  th:nth-child(3) { text-align: left; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; cursor: grab; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: var(--surface2); }
+  tbody tr.drag-over { background: var(--accent-dim) !important; outline: 1px solid var(--accent); }
+  tbody tr.dragging { opacity: 0.35; cursor: grabbing; }
+  tbody tr.hidden-row { opacity: 0.3; }
+  tbody tr.selected-row { background: rgba(0,229,160,0.06) !important; }
+  td { padding: 16px; text-align: right; color: var(--text); vertical-align: middle; }
+  td:nth-child(3) { text-align: left; }
 
-  td {
-    padding: 14px 16px;
-    text-align: right;
-    color: var(--text);
-  }
+  .drag-cell { width: 24px; padding: 12px 6px !important; color: var(--muted); text-align: center !important; }
+  .drag-handle { font-size: 20px; user-select: none; cursor: grab; }
+  .check-cell { width: 44px; padding: 12px 10px !important; text-align: center !important; }
 
-  td:first-child { text-align: left; }
+  .token-checkbox { appearance: none; -webkit-appearance: none; width: 22px; height: 22px; border: 2px solid var(--border2); background: var(--bg); cursor: pointer; position: relative; vertical-align: middle; flex-shrink: 0; display: inline-block; }
+  .token-checkbox:checked { background: var(--accent); border-color: var(--accent); }
+  .token-checkbox:checked::after { content: "✓"; position: absolute; top: -2px; left: 2px; font-size: 15px; color: #000; font-weight: 900; }
+  .token-checkbox:indeterminate { background: var(--accent-dim); border-color: var(--accent); }
 
-  .token-name { font-weight: 700; font-size: 13px; }
-  .token-addr {
-    font-size: 9px;
-    color: var(--muted);
-    margin-top: 2px;
-    letter-spacing: 0.03em;
-  }
+  .token-logo-wrap { display: flex; align-items: center; gap: 10px; }
+  .token-logo { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: var(--surface2); }
+  .logo-fallback { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 13px; font-weight: 700; color: #000; flex-shrink: 0; }
+  .token-name { font-weight: 700; font-size: 15px; }
+  .token-addr { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .token-source { font-size: 10px; margin-top: 2px; }
+  .wallet-tag { display: inline-block; font-size: 10px; font-family: var(--mono); padding: 1px 5px; border-radius: 2px; }
+  .wallet-tag-auto { background: var(--accent-dim); color: var(--accent); }
+  .wallet-tag-manual { background: rgba(91,138,247,0.12); color: #5b8af7; }
 
-  .dot {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    margin-right: 8px;
-    vertical-align: middle;
-  }
+  .actions { display: flex; gap: 4px; justify-content: flex-end; }
+  .empty { padding: 3rem; text-align: center; color: var(--muted); font-family: var(--mono); font-size: 12px; }
 
-  .actions { display: flex; gap: 6px; justify-content: flex-end; }
+  .header-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .refresh-icon { display: inline-block; }
+  .refreshing .refresh-icon { animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.75);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-  }
-
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: center; justify-content: center; padding: 1rem; }
   .modal-overlay.open { display: flex; }
-
-  .modal {
-    background: var(--surface);
-    border: 1px solid var(--border2);
-    padding: 2rem;
-    width: 100%;
-    max-width: 440px;
-    position: relative;
-  }
-
-  .modal h2 {
-    font-family: var(--mono);
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    margin-bottom: 1.5rem;
-    color: var(--accent);
-  }
+  .modal { background: var(--surface); border: 1px solid var(--border2); padding: 2rem; width: 100%; max-width: 500px; position: relative; max-height: 90vh; overflow-y: auto; }
+  .modal h2 { font-family: var(--mono); font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1.5rem; color: var(--accent); }
+  .close-btn { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 22px; line-height: 1; padding: 2px 6px; }
+  .close-btn:hover { color: var(--text); }
 
   .field { margin-bottom: 1.25rem; }
-
-  .field label {
-    display: block;
-    font-size: 10px;
-    color: var(--muted);
-    font-family: var(--mono);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-
-  .field input {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border2);
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 13px;
-    padding: 10px 12px;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-
+  .field label { display: block; font-size: 10px; color: var(--muted); font-family: var(--mono); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+  .field input { width: 100%; background: var(--bg); border: 1px solid var(--border2); color: var(--text); font-family: var(--mono); font-size: 13px; padding: 10px 12px; outline: none; transition: border-color 0.15s; }
   .field input:focus { border-color: var(--accent); }
   .field input::placeholder { color: var(--muted); }
 
   .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 1.5rem; }
+  .divider { border: none; border-top: 1px solid var(--border2); margin: 1.5rem 0; }
+  .section-label { font-size: 10px; color: var(--muted); font-family: var(--mono); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.75rem; }
+  .hint { font-size: 11px; color: var(--muted); font-family: var(--mono); line-height: 1.6; margin-bottom: 1rem; }
+  .error-msg { font-size: 11px; color: var(--red); margin-top: 4px; font-family: var(--mono); }
 
-  .close-btn {
-    position: absolute;
-    top: 1rem; right: 1rem;
-    background: none; border: none;
-    color: var(--muted); cursor: pointer;
-    font-size: 20px; line-height: 1;
-    padding: 4px;
-  }
+  select { background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); font-family: var(--mono); font-size: 13px; padding: 6px 10px; cursor: pointer; outline: none; }
 
-  .close-btn:hover { color: var(--text); }
-
-  .empty {
-    padding: 3rem;
-    text-align: center;
-    color: var(--muted);
-    font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 0.05em;
-  }
-
-  .header-actions { display: flex; gap: 10px; align-items: center; }
-
-  .refresh-icon { display: inline-block; transition: transform 0.6s; }
-  .refreshing .refresh-icon { animation: spin 1s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .bar-wrap {
-    display: flex;
-    gap: 0;
-    height: 6px;
-    border-radius: 3px;
-    overflow: hidden;
-    margin-bottom: 2rem;
-    background: var(--surface2);
-  }
-
-  .bar-seg { height: 100%; transition: width 0.5s ease; }
-
-  .error-msg {
-    font-size: 11px;
-    color: var(--red);
-    margin-top: 4px;
-    font-family: var(--mono);
-  }
+  .wallet-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .wallet-row:last-child { border-bottom: none; }
+  .wallet-addr-text { font-family: var(--mono); font-size: 11px; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -321,14 +133,24 @@
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
     <div class="header-actions">
+      <button class="btn" onclick="openSettings()">⚙ Settings</button>
       <button class="btn" id="refreshBtn" onclick="refreshAll()"><span class="refresh-icon">↻</span> Refresh</button>
       <button class="btn btn-accent" onclick="openModal()">+ Add Token</button>
     </div>
-    <div id="status">—</div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div id="status">—</div>
+      <select id="refreshSelect" onchange="refreshInterval=+this.value;startAutoRefresh()">
+        <option value="30">30s</option>
+        <option value="60" selected>1m</option>
+        <option value="300">5m</option>
+        <option value="600">10m</option>
+        <option value="0">Off</option>
+      </select>
+    </div>
   </div>
 </header>
 
-<div class="summary-grid" id="summaryGrid">
+<div class="summary-grid">
   <div class="summary-card">
     <div class="summary-label">Total Value</div>
     <div class="summary-value" id="totalValue">—</div>
@@ -342,34 +164,47 @@
     <div class="summary-label">Tokens</div>
     <div class="summary-value" id="tokenCount">—</div>
   </div>
-  <div class="summary-card">
-    <div class="summary-label">24h Volume</div>
-    <div class="summary-value" id="totalVolume">—</div>
-  </div>
+
 </div>
 
 <div class="bar-wrap" id="allocationBar"></div>
+
+<div class="bulk-bar" id="bulkBar">
+  <span class="bulk-count" id="bulkCount"></span>
+  <button class="btn btn-sm" onclick="bulkHide()">🙈 Hide</button>
+  <button class="btn btn-sm btn-danger" onclick="bulkDelete()">✕ Delete</button>
+  <button class="btn btn-sm" onclick="deselectAll()">Deselect All</button>
+</div>
+
+<div class="show-hidden-wrap">
+  <button class="btn btn-sm" id="showHiddenBtn" onclick="toggleShowHidden()" style="display:none;"></button>
+</div>
 
 <div class="table-wrap">
   <table>
     <thead>
       <tr>
+        <th></th>
+        <th><input type="checkbox" id="headerCheckbox" class="token-checkbox" onchange="this.checked ? selectAll() : deselectAll()"></th>
         <th>Token</th>
         <th>Holdings</th>
         <th>Price</th>
         <th>Value</th>
         <th>24h Chg</th>
+        <th>1h Vol</th>
+        <th>6h Vol</th>
         <th>24h Vol</th>
         <th>Alloc</th>
         <th></th>
       </tr>
     </thead>
     <tbody id="tableBody">
-      <tr><td colspan="8" class="empty">No tokens yet. Click + Add Token to get started.</td></tr>
+      <tr><td colspan="11" class="empty">Loading...</td></tr>
     </tbody>
   </table>
 </div>
 
+<!-- Add / Edit Token Modal -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <button class="close-btn" onclick="closeModal()">×</button>
@@ -394,218 +229,499 @@
   </div>
 </div>
 
+<!-- Settings Modal -->
+<div class="modal-overlay" id="settingsOverlay">
+  <div class="modal" style="max-width:520px;">
+    <button class="close-btn" onclick="closeSettings()">×</button>
+    <h2>Settings</h2>
+
+    <div class="section-label">Moralis API Key</div>
+    <div class="field">
+      <label>API Key</label>
+      <input type="text" id="settingsApiKey" placeholder="Paste your Moralis API key..." />
+    </div>
+    <p class="hint">Stored in your browser's localStorage only — never in code, never on GitHub.</p>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+      <div id="settingsStatus" style="font-size:11px;font-family:var(--mono);color:var(--accent);min-height:1.2em;"></div>
+      <button class="btn btn-sm btn-accent" onclick="saveApiKey()">Save Key</button>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section-label">Import Wallet</div>
+    <div class="field">
+      <label>Base Chain Wallet Address</label>
+      <input type="text" id="walletImportInput" placeholder="0x..." />
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+      <div id="walletImportStatus" style="font-size:11px;font-family:var(--mono);color:var(--muted);min-height:1.2em;flex:1;margin-right:1rem;"></div>
+      <button class="btn btn-sm btn-accent" onclick="importNewWallet()">⬇ Import</button>
+    </div>
+
+    <div class="section-label" style="margin-top:1rem;">Saved Wallets</div>
+    <div id="savedWalletsList" style="margin-bottom:1.5rem;"></div>
+
+    <hr class="divider">
+
+    <div class="section-label">Hidden Tokens</div>
+    <div id="hiddenTokensList" style="margin-bottom:1rem;"></div>
+
+    <div class="modal-actions">
+      <button class="btn" onclick="closeSettings()">Close</button>
+    </div>
+  </div>
+</div>
+
 <script>
-const COLORS = ['#00e5a0','#5b8af7','#ff9f40','#ff6b9d','#a78bfa','#34d399','#fb923c','#60a5fa'];
+const COLORS = ['#00e5a0','#5b8af7','#ff9f40','#ff6b9d','#a78bfa','#34d399','#fb923c','#60a5fa','#f472b6','#38bdf8'];
 let tokens = [];
 let editIndex = -1;
+let refreshInterval = 60;
+let refreshTimer = null;
+let selectedTokens = new Set();
+let showHidden = false;
+let dragSrcIndex = null;
 
+// ── Storage ──────────────────────────────────────────────────────────────────
 function load() {
-  try {
-    const saved = localStorage.getItem('tracker_tokens');
-    if (saved) tokens = JSON.parse(saved);
-  } catch(e) { tokens = []; }
+  try { const s = localStorage.getItem('tracker_tokens'); if (s) tokens = JSON.parse(s); } catch(e) { tokens = []; }
   if (tokens.length === 0) {
     tokens = [
-      { symbol: 'KEETA', address: '0xc0634090F2Fe6c6d75e61Be2b949464aBB498973', amount: 10000, color: COLORS[0] },
-      { symbol: 'REI',   address: '0x6B2504A03ca4D43d0D73776F6aD46dAb2F2a4cFD', amount: 50000, color: COLORS[1] }
+      { symbol:'KEETA', address:'0xc0634090F2Fe6c6d75e61Be2b949464aBB498973', amount:10000, color:COLORS[0], source:'manual', hidden:false, logo:null },
+      { symbol:'REI',   address:'0x6B2504A03ca4D43d0D73776F6aD46dAb2F2a4cFD', amount:50000, color:COLORS[1], source:'manual', hidden:false, logo:null }
     ];
     save();
   }
+  // migrate older saves that lack hidden/logo fields
+  tokens.forEach(t => { if (t.hidden === undefined) t.hidden = false; if (t.logo === undefined) t.logo = null; });
 }
+function save() { localStorage.setItem('tracker_tokens', JSON.stringify(tokens)); }
+function getApiKey() { return localStorage.getItem('tracker_api_key') || ''; }
+function setApiKey(k) { localStorage.setItem('tracker_api_key', k.trim()); }
+function getWallets() { try { return JSON.parse(localStorage.getItem('tracker_wallets') || '[]'); } catch(e) { return []; } }
+function setWallets(a) { localStorage.setItem('tracker_wallets', JSON.stringify(a)); }
+function nextColor() { const used = tokens.map(t=>t.color); return COLORS.find(c=>!used.includes(c)) || COLORS[tokens.length % COLORS.length]; }
 
-function save() {
-  localStorage.setItem('tracker_tokens', JSON.stringify(tokens));
-}
-
+// ── API ───────────────────────────────────────────────────────────────────────
 async function fetchPrice(address) {
   try {
     const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${address}`);
     const data = await res.json();
     if (data.pairs && data.pairs.length > 0) {
-      const pair = data.pairs.sort((a,b) => (b.liquidity?.usd||0) - (a.liquidity?.usd||0))[0];
-      return {
-        price: parseFloat(pair.priceUsd) || 0,
-        change24h: parseFloat(pair.priceChange?.h24) || 0,
-        volume24h: parseFloat(pair.volume?.h24) || 0,
-        name: pair.baseToken?.name || ''
-      };
+      const pair = data.pairs.sort((a,b) => (b.liquidity?.usd||0)-(a.liquidity?.usd||0))[0];
+      return { price: parseFloat(pair.priceUsd)||0, change24h: parseFloat(pair.priceChange?.h24)||0, vol1h: parseFloat(pair.volume?.h1)||0, vol6h: parseFloat(pair.volume?.h6)||0, vol24h: parseFloat(pair.volume?.h24)||0 };
     }
   } catch(e) {}
-  return { price: 0, change24h: 0, volume24h: 0, name: '' };
+  return { price:0, change24h:0, vol1h:0, vol6h:0, vol24h:0 };
 }
 
+async function fetchTokenLogo(address) {
+  const key = getApiKey();
+  if (!key) return null;
+  try {
+    const res = await fetch(`https://deep-index.moralis.io/api/v2.2/erc20/metadata?chain=base&addresses[0]=${address}`, { headers: { 'X-API-Key': key } });
+    const data = await res.json();
+    if (Array.isArray(data) && data[0]?.logo) return data[0].logo;
+  } catch(e) {}
+  return null;
+}
+
+async function fetchWalletTokens(walletAddress, apiKey) {
+  const res = await fetch(`https://deep-index.moralis.io/api/v2.2/${walletAddress}/erc20?chain=base`, { headers: { 'X-API-Key': apiKey } });
+  const data = await res.json();
+  if (!Array.isArray(data)) throw new Error(data.message || 'API error — check your Moralis key');
+  return data
+    .filter(t => parseFloat(t.balance) > 0)
+    .map(t => ({
+      symbol: t.symbol,
+      address: t.token_address,
+      balance: parseFloat(t.balance) / Math.pow(10, parseInt(t.decimals) || 18),
+      logo: t.logo || t.thumbnail || null
+    }));
+}
+
+// ── Format ────────────────────────────────────────────────────────────────────
 function fmtUsd(n) {
-  if (n >= 1e9) return '$' + (n/1e9).toFixed(2) + 'B';
-  if (n >= 1e6) return '$' + (n/1e6).toFixed(2) + 'M';
-  if (n >= 1e3) return '$' + (n/1e3).toFixed(1) + 'K';
-  return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+  if (n >= 1e9) return '$'+(n/1e9).toFixed(2)+'B';
+  if (n >= 1e6) return '$'+(n/1e6).toFixed(2)+'M';
+  if (n >= 1e3) return '$'+(n/1e3).toFixed(1)+'K';
+  return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 }
-
 function fmtPrice(n) {
-  if (n === 0) return '—';
-  if (n < 0.000001) return '$' + n.toExponential(3);
-  if (n < 0.0001) return '$' + n.toFixed(8);
-  if (n < 0.01) return '$' + n.toFixed(6);
-  if (n < 1) return '$' + n.toFixed(4);
-  return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+  if (n===0) return '—';
+  if (n<0.000001) return '$'+n.toExponential(3);
+  if (n<0.0001) return '$'+n.toFixed(8);
+  if (n<0.01) return '$'+n.toFixed(6);
+  if (n<1) return '$'+n.toFixed(4);
+  return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 }
-
 function fmtNum(n) {
-  return n.toLocaleString('en-US');
+  if (n>=1e6) return (n/1e6).toFixed(2)+'M';
+  if (n>=1e3) return (n/1e3).toFixed(1)+'K';
+  return n.toLocaleString('en-US',{maximumFractionDigits:4});
 }
 
+// ── Refresh ───────────────────────────────────────────────────────────────────
 async function refreshAll() {
   const btn = document.getElementById('refreshBtn');
   btn.classList.add('refreshing');
   document.getElementById('status').textContent = 'Fetching prices...';
-
   const results = await Promise.all(tokens.map(t => fetchPrice(t.address)));
-  tokens.forEach((t, i) => { t._data = results[i]; });
-
+  tokens.forEach((t,i) => { t._data = results[i]; });
   render();
   btn.classList.remove('refreshing');
   document.getElementById('status').textContent = 'Updated ' + new Date().toLocaleTimeString();
 }
+function startAutoRefresh() {
+  if (refreshTimer) clearInterval(refreshTimer);
+  if (refreshInterval > 0) refreshTimer = setInterval(refreshAll, refreshInterval * 1000);
+}
 
+// ── Render ────────────────────────────────────────────────────────────────────
 function render() {
-  const tbody = document.getElementById('tableBody');
-  if (tokens.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" class="empty">No tokens yet. Click + Add Token to get started.</td></tr>';
-    document.getElementById('totalValue').textContent = '$0.00';
-    document.getElementById('totalChange').textContent = '—';
-    document.getElementById('totalChangePct').textContent = '—';
-    document.getElementById('tokenCount').textContent = '0';
-    document.getElementById('totalVolume').textContent = '—';
-    document.getElementById('allocationBar').innerHTML = '';
-    return;
-  }
+  const visibleTokens = tokens.filter(t => !t.hidden);
+  const hiddenTokens  = tokens.filter(t => t.hidden);
+  const displayTokens = showHidden ? tokens : visibleTokens;
 
-  let totalValue = 0, totalVolume = 0, totalChange = 0;
+  // Summary — use all tokens for accurate totals
+  let totalValue=0, totalChange=0;
   tokens.forEach(t => {
-    const d = t._data || { price:0, change24h:0, volume24h:0 };
+    const d = t._data || {price:0,change24h:0,vol1h:0,vol6h:0,vol24h:0};
     t._value = t.amount * d.price;
     totalValue += t._value;
-    totalVolume += d.volume24h;
   });
-
   tokens.forEach(t => {
-    const d = t._data || { price:0, change24h:0, volume24h:0 };
-    totalChange += d.change24h * (t._value / (totalValue || 1));
+    const d = t._data || {price:0,change24h:0,vol1h:0,vol6h:0,vol24h:0};
+    totalChange += d.change24h * (t._value / (totalValue||1));
   });
 
-  document.getElementById('totalValue').textContent = fmtUsd(totalValue);
-
+  document.getElementById('totalValue').textContent = tokens.length ? fmtUsd(totalValue) : '—';
   const changeEl = document.getElementById('totalChange');
-  const changePct = document.getElementById('totalChangePct');
-  changeEl.textContent = (totalChange >= 0 ? '+' : '') + totalChange.toFixed(2) + '%';
-  changeEl.className = 'summary-value ' + (totalChange >= 0 ? 'up' : 'down');
-  changePct.textContent = 'weighted avg';
+  if (tokens.length) {
+    changeEl.textContent = (totalChange>=0?'+':'')+totalChange.toFixed(2)+'%';
+    changeEl.className = 'summary-value '+(totalChange>=0?'up':'down');
+  } else { changeEl.textContent='—'; changeEl.className='summary-value'; }
+  document.getElementById('totalChangePct').textContent = tokens.length ? 'weighted avg' : '—';
+  document.getElementById('tokenCount').textContent = tokens.length
+    ? visibleTokens.length + (hiddenTokens.length ? ' (+'+hiddenTokens.length+' hidden)' : '')
+    : '—';
 
-  document.getElementById('tokenCount').textContent = tokens.length;
-  document.getElementById('totalVolume').textContent = fmtUsd(totalVolume);
-
-  const bar = document.getElementById('allocationBar');
-  bar.innerHTML = tokens.map(t => {
-    const pct = totalValue > 0 ? (t._value / totalValue * 100) : (100 / tokens.length);
+  // Allocation bar (visible only)
+  const visVal = visibleTokens.reduce((s,t)=>s+(t._value||0),0);
+  document.getElementById('allocationBar').innerHTML = visibleTokens.map(t => {
+    const pct = visVal>0 ? (t._value/visVal*100) : (100/visibleTokens.length||1);
     return `<div class="bar-seg" style="width:${pct.toFixed(2)}%;background:${t.color};"></div>`;
   }).join('');
 
-  tbody.innerHTML = tokens.map((t, i) => {
-    const d = t._data || { price:0, change24h:0, volume24h:0 };
-    const alloc = totalValue > 0 ? (t._value / totalValue * 100).toFixed(1) : '0.0';
-    const chgClass = d.change24h >= 0 ? 'up' : 'down';
-    const chgSign = d.change24h >= 0 ? '+' : '';
-    const shortAddr = t.address.slice(0,6) + '...' + t.address.slice(-4);
-    return `<tr>
+  // Show-hidden button
+  const shBtn = document.getElementById('showHiddenBtn');
+  if (hiddenTokens.length > 0) {
+    shBtn.style.display = 'inline-block';
+    shBtn.textContent = showHidden ? `Hide Hidden (${hiddenTokens.length})` : `Show Hidden (${hiddenTokens.length})`;
+  } else {
+    shBtn.style.display = 'none';
+    showHidden = false;
+  }
+
+  // Bulk bar
+  const selCount = selectedTokens.size;
+  const bulkBar = document.getElementById('bulkBar');
+  bulkBar.style.display = selCount > 0 ? 'flex' : 'none';
+  if (selCount > 0) document.getElementById('bulkCount').textContent = `${selCount} token${selCount!==1?'s':''} selected`;
+
+  // Header checkbox
+  const hc = document.getElementById('headerCheckbox');
+  if (hc) {
+    const allSel = displayTokens.length > 0 && displayTokens.every(t=>selectedTokens.has(t.address));
+    hc.checked = allSel;
+    hc.indeterminate = !allSel && selCount > 0;
+  }
+
+  // Table body
+  const tbody = document.getElementById('tableBody');
+  if (displayTokens.length === 0) {
+    const msg = tokens.length === 0
+      ? 'No tokens yet. Click + Add Token or import a wallet in Settings.'
+      : 'All tokens are hidden. Use the button above to reveal them.';
+    tbody.innerHTML = `<tr><td colspan="11" class="empty">${msg}</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = displayTokens.map((t, visIdx) => {
+    const d = t._data || {price:0,change24h:0,vol1h:0,vol6h:0,vol24h:0};
+    const alloc = visVal>0 ? (t._value/visVal*100).toFixed(1)+'%' : '—';
+    const chgClass = d.change24h>=0 ? 'up' : 'down';
+    const chgSign  = d.change24h>=0 ? '+' : '';
+    const shortAddr = t.address.slice(0,6)+'...'+t.address.slice(-4);
+    const isSelected = selectedTokens.has(t.address);
+    const actualIdx = tokens.indexOf(t);
+
+    const sourceTag = t.source==='wallet'
+      ? `<span class="wallet-tag wallet-tag-auto">wallet</span>`
+      : `<span class="wallet-tag wallet-tag-manual">manual</span>`;
+
+    const logoHtml = t.logo
+      ? `<img src="${t.logo}" class="token-logo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" alt=""><div class="logo-fallback" style="background:${t.color};display:none;">${t.symbol.charAt(0)}</div>`
+      : `<div class="logo-fallback" style="background:${t.color};">${t.symbol.charAt(0)}</div>`;
+
+    return `<tr class="${t.hidden?'hidden-row':''} ${isSelected?'selected-row':''}"
+        draggable="true"
+        ondragstart="dragStart(event,${visIdx})"
+        ondragover="dragOver(event)"
+        ondragleave="dragLeave(event)"
+        ondrop="drop(event,${visIdx})"
+        ondragend="dragEnd(event)">
+      <td class="drag-cell"><span class="drag-handle">⠿</span></td>
+      <td class="check-cell"><input type="checkbox" class="token-checkbox" ${isSelected?'checked':''} onchange="toggleSelect('${t.address}')" onclick="event.stopPropagation()"></td>
       <td>
-        <span class="dot" style="background:${t.color}"></span>
-        <span class="token-name">${t.symbol}</span>
-        <div class="token-addr">${shortAddr}</div>
+        <div class="token-logo-wrap">
+          ${logoHtml}
+          <div>
+            <div class="token-name">${t.symbol}</div>
+            <div class="token-addr">${shortAddr}</div>
+            <div class="token-source">${sourceTag}</div>
+          </div>
+        </div>
       </td>
       <td>${fmtNum(t.amount)}</td>
       <td>${fmtPrice(d.price)}</td>
-      <td>${d.price > 0 ? fmtUsd(t._value) : '—'}</td>
-      <td class="${chgClass}">${d.change24h !== 0 ? chgSign + d.change24h.toFixed(2) + '%' : '—'}</td>
-      <td>${d.volume24h > 0 ? fmtUsd(d.volume24h) : '—'}</td>
-      <td>${alloc}%</td>
+      <td>${d.price>0 ? fmtUsd(t._value) : '—'}</td>
+      <td class="${chgClass}">${d.change24h!==0 ? chgSign+d.change24h.toFixed(2)+'%' : '—'}</td>
+      <td>${d.vol1h>0 ? fmtUsd(d.vol1h) : '—'}</td>
+      <td>${d.vol6h>0 ? fmtUsd(d.vol6h) : '—'}</td>
+      <td>${d.vol24h>0 ? fmtUsd(d.vol24h) : '—'}</td>
+      <td>${t.hidden ? '—' : alloc}</td>
       <td>
         <div class="actions">
-          <button class="btn btn-sm" onclick="openModal(${i})">Edit</button>
-          <button class="btn btn-sm btn-danger" onclick="deleteToken(${i})">✕</button>
+          <button class="btn btn-sm" onclick="openModal(${actualIdx})" title="Edit">⚙</button>
+          <button class="btn btn-sm" onclick="toggleHidden(${actualIdx})" title="${t.hidden?'Unhide':'Hide'}">${t.hidden?'👁':'🙈'}</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteToken(${actualIdx})" title="Delete">✕</button>
         </div>
       </td>
     </tr>`;
   }).join('');
 }
 
+// ── Drag & Drop ───────────────────────────────────────────────────────────────
+function dragStart(e, visIdx) {
+  dragSrcIndex = visIdx;
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', visIdx);
+  setTimeout(() => e.currentTarget.classList.add('dragging'), 0);
+}
+function dragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  e.currentTarget.classList.add('drag-over');
+}
+function dragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+function drop(e, visIdx) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (dragSrcIndex === null || dragSrcIndex === visIdx) return;
+  const display = showHidden ? tokens : tokens.filter(t=>!t.hidden);
+  const moved  = display[dragSrcIndex];
+  const target = display[visIdx];
+  const srcI   = tokens.indexOf(moved);
+  tokens.splice(srcI, 1);
+  const tgtI   = tokens.indexOf(target);
+  tokens.splice(tgtI, 0, moved);
+  save();
+  render();
+}
+function dragEnd(e) {
+  e.currentTarget.classList.remove('dragging');
+  dragSrcIndex = null;
+  document.querySelectorAll('.drag-over').forEach(el=>el.classList.remove('drag-over'));
+}
+
+// ── Selection ─────────────────────────────────────────────────────────────────
+function toggleSelect(address) {
+  selectedTokens.has(address) ? selectedTokens.delete(address) : selectedTokens.add(address);
+  render();
+}
+function selectAll() {
+  const display = showHidden ? tokens : tokens.filter(t=>!t.hidden);
+  display.forEach(t => selectedTokens.add(t.address));
+  render();
+}
+function deselectAll() { selectedTokens.clear(); render(); }
+
+function bulkHide() {
+  tokens.forEach(t => { if (selectedTokens.has(t.address)) t.hidden = true; });
+  selectedTokens.clear();
+  save(); render();
+}
+function bulkDelete() {
+  const n = selectedTokens.size;
+  if (!confirm(`Permanently delete ${n} selected token${n!==1?'s':''}?`)) return;
+  tokens = tokens.filter(t => !selectedTokens.has(t.address));
+  selectedTokens.clear();
+  save(); render();
+  if (tokens.length) refreshAll();
+}
+
+// ── Hide/Unhide ───────────────────────────────────────────────────────────────
+function toggleHidden(actualIdx) {
+  tokens[actualIdx].hidden = !tokens[actualIdx].hidden;
+  save(); render();
+}
+function toggleShowHidden() { showHidden = !showHidden; render(); }
+
+// ── Add / Edit Token Modal ────────────────────────────────────────────────────
 function openModal(index = -1) {
   editIndex = index;
-  const overlay = document.getElementById('modalOverlay');
   document.getElementById('addrError').textContent = '';
   if (index >= 0) {
     const t = tokens[index];
     document.getElementById('modalTitle').textContent = 'Edit Token';
-    document.getElementById('inputSymbol').value = t.symbol;
+    document.getElementById('inputSymbol').value  = t.symbol;
     document.getElementById('inputAddress').value = t.address;
-    document.getElementById('inputAmount').value = t.amount;
+    document.getElementById('inputAmount').value  = t.amount;
   } else {
     document.getElementById('modalTitle').textContent = 'Add Token';
-    document.getElementById('inputSymbol').value = '';
-    document.getElementById('inputAddress').value = '';
-    document.getElementById('inputAmount').value = '';
+    ['inputSymbol','inputAddress','inputAmount'].forEach(id => document.getElementById(id).value = '');
   }
-  overlay.classList.add('open');
+  document.getElementById('modalOverlay').classList.add('open');
   document.getElementById('inputSymbol').focus();
 }
-
-function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('open');
-}
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
 
 async function saveToken() {
-  const symbol = document.getElementById('inputSymbol').value.trim().toUpperCase();
+  const symbol  = document.getElementById('inputSymbol').value.trim().toUpperCase();
   const address = document.getElementById('inputAddress').value.trim();
-  const amount = parseFloat(document.getElementById('inputAmount').value);
-  const errEl = document.getElementById('addrError');
-
-  if (!symbol) { errEl.textContent = 'Symbol required'; return; }
+  const amount  = parseFloat(document.getElementById('inputAmount').value);
+  const errEl   = document.getElementById('addrError');
+  if (!symbol)                               { errEl.textContent = 'Symbol required'; return; }
   if (!/^0x[0-9a-fA-F]{40}$/.test(address)) { errEl.textContent = 'Invalid address format'; return; }
-  if (isNaN(amount) || amount < 0) { errEl.textContent = 'Enter a valid amount'; return; }
+  if (isNaN(amount) || amount < 0)           { errEl.textContent = 'Enter a valid amount'; return; }
   errEl.textContent = '';
 
   if (editIndex >= 0) {
-    tokens[editIndex].symbol = symbol;
-    tokens[editIndex].address = address;
-    tokens[editIndex].amount = amount;
-    tokens[editIndex]._data = null;
+    tokens[editIndex] = { ...tokens[editIndex], symbol, address, amount, _data: null };
+    // refresh logo if address changed
+    if (tokens[editIndex].address !== address) {
+      fetchTokenLogo(address).then(logo => { tokens[editIndex].logo = logo; save(); render(); });
+    }
   } else {
-    const usedColors = tokens.map(t => t.color);
-    const color = COLORS.find(c => !usedColors.includes(c)) || COLORS[tokens.length % COLORS.length];
-    tokens.push({ symbol, address, amount, color, _data: null });
+    const logo = await fetchTokenLogo(address);
+    tokens.push({ symbol, address, amount, color: nextColor(), source:'manual', hidden:false, logo, _data:null });
   }
-
-  save();
-  closeModal();
-  await refreshAll();
+  save(); closeModal(); await refreshAll();
 }
 
-function deleteToken(index) {
-  if (!confirm(`Remove ${tokens[index].symbol} from your portfolio?`)) return;
-  tokens.splice(index, 1);
-  save();
-  render();
-  if (tokens.length > 0) refreshAll();
+function deleteToken(actualIdx) {
+  if (!confirm(`Remove ${tokens[actualIdx].symbol}?`)) return;
+  selectedTokens.delete(tokens[actualIdx].address);
+  tokens.splice(actualIdx, 1);
+  save(); render();
+  if (tokens.length) refreshAll();
 }
 
-document.getElementById('modalOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
+// ── Settings Modal ────────────────────────────────────────────────────────────
+function openSettings() {
+  document.getElementById('settingsApiKey').value       = getApiKey();
+  document.getElementById('settingsStatus').textContent = '';
+  document.getElementById('walletImportInput').value    = '';
+  document.getElementById('walletImportStatus').textContent = '';
+  renderSavedWallets();
+  renderHiddenTokensList();
+  document.getElementById('settingsOverlay').classList.add('open');
+}
+function closeSettings() { document.getElementById('settingsOverlay').classList.remove('open'); }
+
+function saveApiKey() {
+  const key = document.getElementById('settingsApiKey').value.trim();
+  if (key) setApiKey(key);
+  const el = document.getElementById('settingsStatus');
+  el.textContent = '✓ Key saved';
+  setTimeout(() => { el.textContent = ''; }, 2000);
+}
+
+function renderSavedWallets() {
+  const wallets = getWallets();
+  const el = document.getElementById('savedWalletsList');
+  if (!wallets.length) { el.innerHTML = '<p style="font-size:11px;color:var(--muted);font-family:var(--mono);">No wallets saved.</p>'; return; }
+  el.innerHTML = wallets.map((w,i) => `
+    <div class="wallet-row">
+      <span class="wallet-addr-text">${w.slice(0,10)}...${w.slice(-6)}</span>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-sm" onclick="reimportWallet('${w}')">↻ Sync</button>
+        <button class="btn btn-sm btn-danger" onclick="removeWallet(${i})">Remove</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderHiddenTokensList() {
+  const hidden = tokens.filter(t => t.hidden);
+  const el = document.getElementById('hiddenTokensList');
+  if (!hidden.length) { el.innerHTML = '<p style="font-size:11px;color:var(--muted);font-family:var(--mono);">No hidden tokens.</p>'; return; }
+  el.innerHTML = hidden.map(t => `
+    <div class="wallet-row">
+      <span style="font-family:var(--mono);font-size:12px;">${t.symbol} <span style="color:var(--muted);font-size:10px;">${t.address.slice(0,6)}...${t.address.slice(-4)}</span></span>
+      <button class="btn btn-sm" onclick="unhideToken('${t.address}')">Unhide</button>
+    </div>`).join('');
+}
+
+function unhideToken(address) {
+  const t = tokens.find(x => x.address === address);
+  if (t) { t.hidden = false; save(); render(); renderHiddenTokensList(); }
+}
+
+function removeWallet(i) {
+  const w = getWallets(); w.splice(i,1); setWallets(w); renderSavedWallets();
+}
+
+async function importNewWallet() {
+  const wallet = document.getElementById('walletImportInput').value.trim();
+  const apiKey = getApiKey();
+  const statusEl = document.getElementById('walletImportStatus');
+  if (!/^0x[0-9a-fA-F]{40}$/.test(wallet)) { statusEl.style.color='var(--red)'; statusEl.textContent='Invalid address'; return; }
+  if (!apiKey) { statusEl.style.color='var(--red)'; statusEl.textContent='Save your Moralis API key first'; return; }
+  const wallets = getWallets();
+  if (!wallets.includes(wallet)) { wallets.push(wallet); setWallets(wallets); renderSavedWallets(); }
+  document.getElementById('walletImportInput').value = '';
+  await reimportWallet(wallet);
+}
+
+async function reimportWallet(walletAddress) {
+  const apiKey = getApiKey();
+  const statusEl = document.getElementById('walletImportStatus');
+  if (!apiKey) { statusEl.style.color='var(--red)'; statusEl.textContent='Moralis API key required'; return; }
+  statusEl.style.color='var(--muted)';
+  statusEl.textContent = 'Syncing '+walletAddress.slice(0,8)+'...';
+  try {
+    const found = await fetchWalletTokens(walletAddress, apiKey);
+    let added=0, updated=0;
+    for (const t of found) {
+      const existing = tokens.find(x => x.address.toLowerCase()===t.address.toLowerCase());
+      if (existing) { existing.amount=t.balance; existing.source='wallet'; if (t.logo) existing.logo=t.logo; updated++; }
+      else { tokens.push({ symbol:t.symbol, address:t.address, amount:t.balance, color:nextColor(), source:'wallet', hidden:false, logo:t.logo||null, _data:null }); added++; }
+    }
+    save(); render();
+    statusEl.style.color='var(--accent)';
+    statusEl.textContent = `✓ Added ${added}, updated ${updated}`;
+  } catch(e) {
+    statusEl.style.color='var(--red)';
+    statusEl.textContent = 'Error: '+(e.message||'Import failed');
+  }
+}
+
+// ── Modal close helpers ───────────────────────────────────────────────────────
+['modalOverlay','settingsOverlay'].forEach(id => {
+  document.getElementById(id).addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
+  });
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') ['modalOverlay','settingsOverlay'].forEach(id => document.getElementById(id).classList.remove('open'));
 });
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
+// ── Boot ──────────────────────────────────────────────────────────────────────
 load();
 render();
 refreshAll();
+startAutoRefresh();
 </script>
 </body>
 </html>
