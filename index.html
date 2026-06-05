@@ -285,13 +285,7 @@ let dragSrcIndex = null;
 // ── Storage ──────────────────────────────────────────────────────────────────
 function load() {
   try { const s = localStorage.getItem('tracker_tokens'); if (s) tokens = JSON.parse(s); } catch(e) { tokens = []; }
-  if (tokens.length === 0) {
-    tokens = [
-      { symbol:'KEETA', address:'0xc0634090F2Fe6c6d75e61Be2b949464aBB498973', amount:10000, color:COLORS[0], source:'manual', hidden:false, logo:null },
-      { symbol:'REI',   address:'0x6B2504A03ca4D43d0D73776F6aD46dAb2F2a4cFD', amount:50000, color:COLORS[1], source:'manual', hidden:false, logo:null }
-    ];
-    save();
-  }
+
   // migrate older saves that lack hidden/logo fields
   tokens.forEach(t => { if (t.hidden === undefined) t.hidden = false; if (t.logo === undefined) t.logo = null; });
 }
@@ -441,7 +435,7 @@ function render() {
   const tbody = document.getElementById('tableBody');
   if (displayTokens.length === 0) {
     const msg = tokens.length === 0
-      ? 'No tokens yet. Click + Add Token or import a wallet in Settings.'
+      ? 'Welcome! Click + Add Token to add a token manually, or import a wallet in Settings.'
       : 'All tokens are hidden. Use the button above to reveal them.';
     tbody.innerHTML = `<tr><td colspan="11" class="empty">${msg}</td></tr>`;
     return;
