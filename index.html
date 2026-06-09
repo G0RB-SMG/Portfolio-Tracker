@@ -235,19 +235,6 @@
     <button class="close-btn" onclick="closeSettings()">×</button>
     <h2>Settings</h2>
 
-    <div class="section-label">Moralis API Key</div>
-    <div class="field">
-      <label>API Key</label>
-      <input type="text" id="settingsApiKey" placeholder="Paste your Moralis API key..." />
-    </div>
-    <p class="hint">Stored in your browser's localStorage only — never in code, never on GitHub.</p>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
-      <div id="settingsStatus" style="font-size:11px;font-family:var(--mono);color:var(--accent);min-height:1.2em;"></div>
-      <button class="btn btn-sm btn-accent" onclick="saveApiKey()">Save Key</button>
-    </div>
-
-    <hr class="divider">
-
     <div class="section-label">Import Wallet</div>
     <div class="field">
       <label>Base Chain Wallet Address</label>
@@ -290,8 +277,6 @@ function load() {
   tokens.forEach(t => { if (t.hidden === undefined) t.hidden = false; if (t.logo === undefined) t.logo = null; });
 }
 function save() { localStorage.setItem('tracker_tokens', JSON.stringify(tokens)); }
-function getApiKey() { return localStorage.getItem('tracker_api_key') || ''; }
-function setApiKey(k) { localStorage.setItem('tracker_api_key', k.trim()); }
 function getWallets() { try { return JSON.parse(localStorage.getItem('tracker_wallets') || '[]'); } catch(e) { return []; } }
 function setWallets(a) { localStorage.setItem('tracker_wallets', JSON.stringify(a)); }
 function nextColor() { const used = tokens.map(t=>t.color); return COLORS.find(c=>!used.includes(c)) || COLORS[tokens.length % COLORS.length]; }
@@ -310,28 +295,19 @@ async function fetchPrice(address) {
 }
 
 async function fetchTokenLogo(address) {
-  const key = getApiKey();
-  if (!key) return null;
   try {
-    const res = await fetch(`https://deep-index.moralis.io/api/v2.2/erc20/metadata?chain=base&addresses[0]=${address}`, { headers: { 'X-API-Key': key } });
+    const res = await fetch(`/api/token-logo?address=${address}`);
     const data = await res.json();
-    if (Array.isArray(data) && data[0]?.logo) return data[0].logo;
+    return data.logo || null;
   } catch(e) {}
   return null;
 }
 
-async function fetchWalletTokens(walletAddress, apiKey) {
-  const res = await fetch(`https://deep-index.moralis.io/api/v2.2/${walletAddress}/erc20?chain=base`, { headers: { 'X-API-Key': apiKey } });
+async function fetchWalletTokens(walletAddress) {
+  const res = await fetch(`/api/wallet-tokens?address=${walletAddress}`);
   const data = await res.json();
-  if (!Array.isArray(data)) throw new Error(data.message || 'API error — check your Moralis key');
-  return data
-    .filter(t => parseFloat(t.balance) > 0)
-    .map(t => ({
-      symbol: t.symbol,
-      address: t.token_address,
-      balance: parseFloat(t.balance) / Math.pow(10, parseInt(t.decimals) || 18),
-      logo: t.logo || t.thumbnail || null
-    }));
+  if (!Array.isArray(data)) throw new Error(data.error || 'API error');
+  return data;
 }
 
 // ── Format ────────────────────────────────────────────────────────────────────
@@ -614,8 +590,6 @@ function deleteToken(actualIdx) {
 
 // ── Settings Modal ────────────────────────────────────────────────────────────
 function openSettings() {
-  document.getElementById('settingsApiKey').value       = getApiKey();
-  document.getElementById('settingsStatus').textContent = '';
   document.getElementById('walletImportInput').value    = '';
   document.getElementById('walletImportStatus').textContent = '';
   renderSavedWallets();
@@ -623,14 +597,6 @@ function openSettings() {
   document.getElementById('settingsOverlay').classList.add('open');
 }
 function closeSettings() { document.getElementById('settingsOverlay').classList.remove('open'); }
-
-function saveApiKey() {
-  const key = document.getElementById('settingsApiKey').value.trim();
-  if (key) setApiKey(key);
-  const el = document.getElementById('settingsStatus');
-  el.textContent = '✓ Key saved';
-  setTimeout(() => { el.textContent = ''; }, 2000);
-}
 
 function renderSavedWallets() {
   const wallets = getWallets();
@@ -668,10 +634,8 @@ function removeWallet(i) {
 
 async function importNewWallet() {
   const wallet = document.getElementById('walletImportInput').value.trim();
-  const apiKey = getApiKey();
   const statusEl = document.getElementById('walletImportStatus');
   if (!/^0x[0-9a-fA-F]{40}$/.test(wallet)) { statusEl.style.color='var(--red)'; statusEl.textContent='Invalid address'; return; }
-  if (!apiKey) { statusEl.style.color='var(--red)'; statusEl.textContent='Save your Moralis API key first'; return; }
   const wallets = getWallets();
   if (!wallets.includes(wallet)) { wallets.push(wallet); setWallets(wallets); renderSavedWallets(); }
   document.getElementById('walletImportInput').value = '';
@@ -679,13 +643,11 @@ async function importNewWallet() {
 }
 
 async function reimportWallet(walletAddress) {
-  const apiKey = getApiKey();
   const statusEl = document.getElementById('walletImportStatus');
-  if (!apiKey) { statusEl.style.color='var(--red)'; statusEl.textContent='Moralis API key required'; return; }
   statusEl.style.color='var(--muted)';
   statusEl.textContent = 'Syncing '+walletAddress.slice(0,8)+'...';
   try {
-    const found = await fetchWalletTokens(walletAddress, apiKey);
+    const found = await fetchWalletTokens(walletAddress);
     let added=0, updated=0;
     for (const t of found) {
       const existing = tokens.find(x => x.address.toLowerCase()===t.address.toLowerCase());
