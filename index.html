@@ -316,12 +316,48 @@ async function fetchWalletTokens(walletAddress) {
   return data;
 }
 
-async function fetchTokenData(address) {
-  try {
-    const res = await fetch(`/api/token-data?address=${address}`);
-    return await res.json();
-  } catch(e) {}
-  return null;
+// ── CoinGecko batch fetch with localStorage cache ─────────────────────────────
+const CG_LS_KEY = 'tracker_cg_cache';
+const CG_LS_TTL = 5 * 60 * 1000; // 5 min — matches server cache
+
+function cgCacheGet() {
+  try { return JSON.parse(localStorage.getItem(CG_LS_KEY) || '{}'); } catch(e) { return {}; }
+}
+function cgCacheSet(c) {
+  try { localStorage.setItem(CG_LS_KEY, JSON.stringify(c)); } catch(e) {}
+}
+
+async function fetchTokenDataBatch(addresses) {
+  if (!addresses.length) return {};
+  const store = cgCacheGet();
+  const now   = Date.now();
+  const out   = {};
+  const stale = [];
+
+  for (const addr of addresses) {
+    const entry = store[addr.toLowerCase()];
+    if (entry && (now - entry.ts) < CG_LS_TTL) {
+      out[addr] = entry.data;
+    } else {
+      stale.push(addr);
+    }
+  }
+
+  if (stale.length) {
+    try {
+      const res  = await fetch(`/api/token-data-batch?addresses=${stale.join(',')}`);
+      const data = await res.json();
+      for (const [addr, result] of Object.entries(data)) {
+        out[addr] = result;
+        if (result) store[addr.toLowerCase()] = { data: result, ts: now };
+      }
+      cgCacheSet(store);
+    } catch(e) {
+      console.warn('CG batch fetch failed:', e.message);
+    }
+  }
+
+  return out;
 }
 
 // ── Format ────────────────────────────────────────────────────────────────────
@@ -350,11 +386,11 @@ async function refreshAll() {
   const btn = document.getElementById('refreshBtn');
   btn.classList.add('refreshing');
   document.getElementById('status').textContent = 'Fetching prices...';
-  const [dexResults, cgResults] = await Promise.all([
+  const [dexResults, cgBatch] = await Promise.all([
     Promise.all(tokens.map(t => fetchPrice(t.address))),
-    Promise.all(tokens.map(t => fetchTokenData(t.address)))
+    fetchTokenDataBatch(tokens.map(t => t.address))
   ]);
-  tokens.forEach((t,i) => { t._data = dexResults[i]; t._cgData = cgResults[i]; });
+  tokens.forEach((t,i) => { t._data = dexResults[i]; t._cgData = cgBatch[t.address] ?? null; });
   render();
   btn.classList.remove('refreshing');
   document.getElementById('status').textContent = 'Updated ' + new Date().toLocaleTimeString();
