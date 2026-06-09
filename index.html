@@ -337,7 +337,7 @@ async function fetchTokenDataBatch(addresses) {
   for (const addr of addresses) {
     const key   = addr.toLowerCase();
     const entry = store[key];
-    if (entry && (now - entry.ts) < CG_LS_TTL) {
+    if (entry && (now - entry.ts) < CG_LS_TTL && entry.data) {
       out[key] = entry.data;
     } else {
       stale.push(addr);
@@ -475,6 +475,7 @@ function render() {
   tbody.innerHTML = displayTokens.map((t, visIdx) => {
     const d = t._data || {price:0,change24h:0,vol1h:0,vol6h:0,vol24h:0};
     const cg = t._cgData || null;
+    const hasCgData = cg && (cg.rank !== null || cg.marketCap !== null || cg.fdv !== null);
     const alloc = visVal>0 ? (t._value/visVal*100).toFixed(1)+'%' : '—';
     const chgClass = d.change24h>=0 ? 'up' : 'down';
     const chgSign  = d.change24h>=0 ? '+' : '';
@@ -505,7 +506,7 @@ function render() {
           <div>
             <div class="token-name">${t.symbol}${cg?.rank ? `<span class="rank-badge">#${cg.rank}</span>` : ''}</div>
             <div class="token-addr">${shortAddr}</div>
-            <div class="token-source">${sourceTag}<span class="data-src-tag ${cg ? 'data-src-cg' : 'data-src-dex'}">${cg ? 'CG' : 'DEX'}</span></div>
+            <div class="token-source">${sourceTag}<span class="data-src-tag ${hasCgData ? 'data-src-cg' : 'data-src-dex'}">${hasCgData ? 'CG' : 'DEX'}</span></div>
           </div>
         </div>
       </td>
