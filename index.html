@@ -89,6 +89,10 @@
   .wallet-tag { display: inline-block; font-size: 10px; font-family: var(--mono); padding: 1px 5px; border-radius: 2px; }
   .wallet-tag-auto { background: var(--accent-dim); color: var(--accent); }
   .wallet-tag-manual { background: rgba(91,138,247,0.12); color: #5b8af7; }
+  .rank-badge { font-size: 10px; color: var(--muted); font-weight: 400; margin-left: 3px; }
+  .data-src-tag { display: inline-block; font-size: 9px; font-family: var(--mono); padding: 1px 4px; border-radius: 2px; margin-left: 3px; }
+  .data-src-cg { background: rgba(255,159,64,0.15); color: #ff9f40; }
+  .data-src-dex { background: rgba(91,138,247,0.12); color: #5b8af7; }
 
   .actions { display: flex; gap: 4px; justify-content: flex-end; }
   .empty { padding: 3rem; text-align: center; color: var(--muted); font-family: var(--mono); font-size: 12px; }
@@ -189,6 +193,8 @@
         <th>Token</th>
         <th>Holdings</th>
         <th>Price</th>
+        <th>Mkt Cap</th>
+        <th>FDV</th>
         <th>Value</th>
         <th>24h Chg</th>
         <th>1h Vol</th>
@@ -199,7 +205,7 @@
       </tr>
     </thead>
     <tbody id="tableBody">
-      <tr><td colspan="11" class="empty">Loading...</td></tr>
+      <tr><td colspan="14" class="empty">Loading...</td></tr>
     </tbody>
   </table>
 </div>
@@ -310,6 +316,14 @@ async function fetchWalletTokens(walletAddress) {
   return data;
 }
 
+async function fetchTokenData(address) {
+  try {
+    const res = await fetch(`/api/token-data?address=${address}`);
+    return await res.json();
+  } catch(e) {}
+  return null;
+}
+
 // ── Format ────────────────────────────────────────────────────────────────────
 function fmtUsd(n) {
   if (n >= 1e9) return '$'+(n/1e9).toFixed(2)+'B';
@@ -336,8 +350,11 @@ async function refreshAll() {
   const btn = document.getElementById('refreshBtn');
   btn.classList.add('refreshing');
   document.getElementById('status').textContent = 'Fetching prices...';
-  const results = await Promise.all(tokens.map(t => fetchPrice(t.address)));
-  tokens.forEach((t,i) => { t._data = results[i]; });
+  const [dexResults, cgResults] = await Promise.all([
+    Promise.all(tokens.map(t => fetchPrice(t.address))),
+    Promise.all(tokens.map(t => fetchTokenData(t.address)))
+  ]);
+  tokens.forEach((t,i) => { t._data = dexResults[i]; t._cgData = cgResults[i]; });
   render();
   btn.classList.remove('refreshing');
   document.getElementById('status').textContent = 'Updated ' + new Date().toLocaleTimeString();
@@ -413,12 +430,13 @@ function render() {
     const msg = tokens.length === 0
       ? 'Welcome! Click + Add Token to add a token manually, or import a wallet in Settings.'
       : 'All tokens are hidden. Use the button above to reveal them.';
-    tbody.innerHTML = `<tr><td colspan="11" class="empty">${msg}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="14" class="empty">${msg}</td></tr>`;
     return;
   }
 
   tbody.innerHTML = displayTokens.map((t, visIdx) => {
     const d = t._data || {price:0,change24h:0,vol1h:0,vol6h:0,vol24h:0};
+    const cg = t._cgData || null;
     const alloc = visVal>0 ? (t._value/visVal*100).toFixed(1)+'%' : '—';
     const chgClass = d.change24h>=0 ? 'up' : 'down';
     const chgSign  = d.change24h>=0 ? '+' : '';
@@ -447,14 +465,16 @@ function render() {
         <div class="token-logo-wrap">
           ${logoHtml}
           <div>
-            <div class="token-name">${t.symbol}</div>
+            <div class="token-name">${t.symbol}${cg?.rank ? `<span class="rank-badge">#${cg.rank}</span>` : ''}</div>
             <div class="token-addr">${shortAddr}</div>
-            <div class="token-source">${sourceTag}</div>
+            <div class="token-source">${sourceTag}<span class="data-src-tag ${cg ? 'data-src-cg' : 'data-src-dex'}">${cg ? 'CG' : 'DEX'}</span></div>
           </div>
         </div>
       </td>
       <td>${fmtNum(t.amount)}</td>
       <td>${fmtPrice(d.price)}</td>
+      <td>${cg?.marketCap ? fmtUsd(cg.marketCap) : '—'}</td>
+      <td>${cg?.fdv ? fmtUsd(cg.fdv) : '—'}</td>
       <td>${d.price>0 ? fmtUsd(t._value) : '—'}</td>
       <td class="${chgClass}">${d.change24h!==0 ? chgSign+d.change24h.toFixed(2)+'%' : '—'}</td>
       <td>${d.vol1h>0 ? fmtUsd(d.vol1h) : '—'}</td>
