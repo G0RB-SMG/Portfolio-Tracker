@@ -331,13 +331,14 @@ async function fetchTokenDataBatch(addresses) {
   if (!addresses.length) return {};
   const store = cgCacheGet();
   const now   = Date.now();
-  const out   = {};
+  const out   = {}; // always keyed by lc(address) — never mixed case
   const stale = [];
 
   for (const addr of addresses) {
-    const entry = store[addr.toLowerCase()];
+    const key   = addr.toLowerCase();
+    const entry = store[key];
     if (entry && (now - entry.ts) < CG_LS_TTL) {
-      out[addr] = entry.data;
+      out[key] = entry.data;
     } else {
       stale.push(addr);
     }
@@ -347,9 +348,10 @@ async function fetchTokenDataBatch(addresses) {
     try {
       const res  = await fetch(`/api/token-data-batch?addresses=${stale.join(',')}`);
       const data = await res.json();
-      for (const [addr, result] of Object.entries(data)) {
-        out[addr] = result;
-        if (result) store[addr.toLowerCase()] = { data: result, ts: now };
+      // server already normalises keys to lowercase; mirror that here
+      for (const [key, result] of Object.entries(data)) {
+        out[key] = result;
+        if (result) store[key] = { data: result, ts: now };
       }
       cgCacheSet(store);
     } catch(e) {
@@ -390,7 +392,7 @@ async function refreshAll() {
     Promise.all(tokens.map(t => fetchPrice(t.address))),
     fetchTokenDataBatch(tokens.map(t => t.address))
   ]);
-  tokens.forEach((t,i) => { t._data = dexResults[i]; t._cgData = cgBatch[t.address] ?? null; });
+  tokens.forEach((t,i) => { t._data = dexResults[i]; t._cgData = cgBatch[t.address.toLowerCase()] ?? null; });
   render();
   btn.classList.remove('refreshing');
   document.getElementById('status').textContent = 'Updated ' + new Date().toLocaleTimeString();
