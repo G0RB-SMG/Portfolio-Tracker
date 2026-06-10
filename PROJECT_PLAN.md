@@ -34,6 +34,7 @@ Small UX/cosmetic items that don't block any phase. Burn down between phases or 
 - **Custom delete-confirmation modal.** Replace the browser `confirm()` dialog with a styled modal matching the app's design. Cosmetic only — existing `confirm()` works.
 - **Auto-hide dust tokens on wallet import.** When a wallet import returns tokens with zero value or no metadata, mark them hidden by default so they don't enter the refresh loop until the user explicitly unhides.
 - **Mobile responsive layout.** Touch-friendly controls, fluid table on narrow widths. Was originally in Phase 3 but reclassified as polish.
+- **Lot tracking for cost basis.** Replace the single `costBasis` field with an array of `lots` (each with amount + entry price + date). Compute average cost basis as a derived value. Enables accurate P&L across multiple buys/sells over time. Not needed for v1 — manual updating of a single cost basis number is sufficient.
 
 ---
 
