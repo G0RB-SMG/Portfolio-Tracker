@@ -388,14 +388,25 @@ async function refreshAll() {
   const btn = document.getElementById('refreshBtn');
   btn.classList.add('refreshing');
   document.getElementById('status').textContent = 'Fetching prices...';
+  const active = tokens.filter(t => !t.hidden); // hidden tokens make zero network calls
   const [dexResults, cgBatch] = await Promise.all([
-    Promise.all(tokens.map(t => fetchPrice(t.address))),
-    fetchTokenDataBatch(tokens.map(t => t.address))
+    Promise.all(active.map(t => fetchPrice(t.address))),
+    fetchTokenDataBatch(active.map(t => t.address))
   ]);
-  tokens.forEach((t,i) => { t._data = dexResults[i]; t._cgData = cgBatch[t.address.toLowerCase()] ?? null; });
+  active.forEach((t,i) => { t._data = dexResults[i]; t._cgData = cgBatch[t.address.toLowerCase()] ?? null; });
   render();
   btn.classList.remove('refreshing');
   document.getElementById('status').textContent = 'Updated ' + new Date().toLocaleTimeString();
+}
+async function refreshOne(token) {
+  if (!token) return;
+  const [dex, cgBatch] = await Promise.all([
+    fetchPrice(token.address),
+    fetchTokenDataBatch([token.address])
+  ]);
+  token._data   = dex;
+  token._cgData = cgBatch[token.address.toLowerCase()] ?? null;
+  render();
 }
 function startAutoRefresh() {
   if (refreshTimer) clearInterval(refreshTimer);
@@ -408,25 +419,27 @@ function render() {
   const hiddenTokens  = tokens.filter(t => t.hidden);
   const displayTokens = showHidden ? tokens : visibleTokens;
 
-  // Summary — use all tokens for accurate totals
-  let totalValue=0, totalChange=0;
+  // Per-token value for all tokens (rows + allocation bar still need it)
   tokens.forEach(t => {
     const d = t._data || {price:0,change24h:0,vol1h:0,vol6h:0,vol24h:0};
     t._value = t.amount * d.price;
-    totalValue += t._value;
   });
-  tokens.forEach(t => {
+
+  // Summary — visible (non-hidden) tokens only; hidden contribute zero
+  let totalValue=0, totalChange=0;
+  visibleTokens.forEach(t => { totalValue += t._value; });
+  visibleTokens.forEach(t => {
     const d = t._data || {price:0,change24h:0,vol1h:0,vol6h:0,vol24h:0};
     totalChange += d.change24h * (t._value / (totalValue||1));
   });
 
-  document.getElementById('totalValue').textContent = tokens.length ? fmtUsd(totalValue) : '—';
+  document.getElementById('totalValue').textContent = visibleTokens.length ? fmtUsd(totalValue) : '—';
   const changeEl = document.getElementById('totalChange');
-  if (tokens.length) {
+  if (visibleTokens.length) {
     changeEl.textContent = (totalChange>=0?'+':'')+totalChange.toFixed(2)+'%';
     changeEl.className = 'summary-value '+(totalChange>=0?'up':'down');
   } else { changeEl.textContent='—'; changeEl.className='summary-value'; }
-  document.getElementById('totalChangePct').textContent = tokens.length ? 'weighted avg' : '—';
+  document.getElementById('totalChangePct').textContent = visibleTokens.length ? 'weighted avg' : '—';
   document.getElementById('tokenCount').textContent = tokens.length
     ? visibleTokens.length + (hiddenTokens.length ? ' (+'+hiddenTokens.length+' hidden)' : '')
     : '—';
@@ -592,8 +605,11 @@ function bulkDelete() {
 
 // ── Hide/Unhide ───────────────────────────────────────────────────────────────
 function toggleHidden(actualIdx) {
-  tokens[actualIdx].hidden = !tokens[actualIdx].hidden;
+  const t = tokens[actualIdx];
+  const wasHidden = t.hidden;
+  t.hidden = !t.hidden;
   save(); render();
+  if (wasHidden && !t.hidden) refreshOne(t); // just unhidden → fetch fresh data
 }
 function toggleShowHidden() { showHidden = !showHidden; render(); }
 
@@ -639,6 +655,7 @@ async function saveToken() {
   save(); closeModal(); await refreshAll();
 }
 
+// TODO: blacklist on delete (pending design discussion)
 function deleteToken(actualIdx) {
   if (!confirm(`Remove ${tokens[actualIdx].symbol}?`)) return;
   selectedTokens.delete(tokens[actualIdx].address);
@@ -684,7 +701,7 @@ function renderHiddenTokensList() {
 
 function unhideToken(address) {
   const t = tokens.find(x => x.address === address);
-  if (t) { t.hidden = false; save(); render(); renderHiddenTokensList(); }
+  if (t) { t.hidden = false; save(); render(); renderHiddenTokensList(); refreshOne(t); }
 }
 
 function removeWallet(i) {
